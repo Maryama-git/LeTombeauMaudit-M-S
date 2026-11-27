@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 
+<!DOCTYPE html>
+<html>
+
 <head>
   <title>LE TOMBEAU MAUDIT</title>
   <meta charset="utf-8" />
@@ -15,12 +18,14 @@
 
   <!-- ajouter balise de style -->
   <link rel="stylesheet" href="style.css">
-
+  <!-- preload music et image de fond -->
+  <link rel="preload" href="ambiance_fond.mp3" as="audio" type="audio/mpeg" fetchpriority="high">
+  <link rel="preload" href="fond.png" as="image" type="image/png" fetchpriority="high">
 
 </head>
 
 <body>
-  <p><button id="idStop">Stop</button></p>
+
 
   <script>
 
@@ -30,19 +35,57 @@
         console.log('*** JQuery ' + $.fn.jquery + ' prêt ***')
         // Fstop
         let Fstop = function () {
-          $('audio').remove()
+          $('#idFX').remove()
         } //fin Fstop
-        $('#idStop').on('click', Fstop)
 
         // Fplay
         let Fplay = function (Pfile) {
-          let oAudio = $('<audio autoplay> <source src="' + Pfile + '"></audio>')
+          let oAudio = $('<audio autoplay id="idFX"> <source src="' + Pfile + '"></audio>')
           $('body').append(oAudio)
         } //fin Fplay
 
+        // FplayZIK : démarre la musique de fond en boucle + bouton Pause
+        let FplayZIK = function () {
+          let oAudio = $('<audio autoplay loop id="idZIK"><source src="ambiance_fond.mp3"></audio>')
+          $('body').append(oAudio)
+          $('#idBTzik').remove()
+          let oBT = $('<button id="idBTzik">Pause</button>')
+          $('body').append(oBT)
+          oBT.on('click', FpauseZIK)
+        } //fin FplayZIK
+
+        // FpauseZIK : met la musique en pause + bouton Continue
+        let FpauseZIK = function () {
+          let oAudio = $('#idZIK')
+          let jsAudio = oAudio[0]
+          jsAudio.pause()
+          $('#idBTzik').remove()
+          let oBT = $('<button id="idBTzik">Continue</button>')
+          $('body').append(oBT)
+          oBT.on('click', FcontinueZIK)
+        } //fin FpauseZIK
+
+        // FcontinueZIK : reprend la musique + bouton Pause
+        let FcontinueZIK = function () {
+          let oAudio = $('#idZIK')
+          let jsAudio = oAudio[0]
+          jsAudio.play()
+          $('#idBTzik').remove()
+          let oBT = $('<button id="idBTzik">Pause</button>')
+          $('body').append(oBT)
+          oBT.on('click', FpauseZIK)
+        } //fin FcontinueZIK
+
+         // FstopZIK : arrête la musique et retire le bouton
+        let FstopZIK = function () {
+          $('#idBTzik').remove()
+          $('#idZIK').remove()
+        } //fin FstopZIK
 
         // Debut de Fscene1 
         let Fscene1 = function () { // début Fscene1
+          //Stopper la musique de fond 
+          FstopZIK()
           // Stopper le son
           Fstop()
 
@@ -74,8 +117,9 @@
         let Fscene2 = function () { // début Fscene2
           // Stopper précédents sons
           Fstop()
-          // Jouer les sons
-          Fplay('ambiance_fond.mp3')
+          // Jouer le son de fond
+          FplayZIK()
+          // Jouer le bruit de la scene 
           Fplay('scene1_porte.mp3')
 
           let shtml = '<div>'
@@ -104,7 +148,6 @@
           // Stopper précédents sons
           Fstop()
           // Jouer les sons
-          Fplay('ambiance_fond.mp3')
           Fplay('scene2_torches.mp3')
 
           let shtml = '<div>'
@@ -136,7 +179,6 @@
           // Stopper précédents sons
           Fstop()
           // Jouer les sons
-          Fplay('ambiance_fond.mp3')
           Fplay('scene3_pieges.mp3')
 
           let shtml = '<div>'
@@ -170,7 +212,6 @@
           // Stopper précédents sons
           Fstop()
           // Jouer les sons
-          Fplay('ambiance_fond.mp3')
           Fplay('scene4_tresor.mp3')
 
           let shtml = '<div>'
